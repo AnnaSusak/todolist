@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "dependencies"
+version = "0.1.0"
+description = "Here are the dependencies"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+uvicorn = "^0.20.0"
+sqlalchemy = {extras = ["asyncio"], version = "^1.4.45"}
+aiosqlite = "^0.18.0"
+alembic = "^1.9.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
