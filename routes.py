@@ -55,7 +55,7 @@ async def create(req: AddRequest, session: AsyncSession = Depends(get_session)):
 
 
 @router.post("/items/update")
-async def updtate(req: EditRequest, session: AsyncSession = Depends(get_session)):
+async def update(req: EditRequest, session: AsyncSession = Depends(get_session)):
     result = await session.execute(
         select(Note).filter(
             Note.id == req.id
