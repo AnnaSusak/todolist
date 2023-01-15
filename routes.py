@@ -27,7 +27,7 @@ async def root(session: AsyncSession = Depends(get_session)):
     result = await session.execute(
         select(Note)
     )
-    notes = result.fetchall()
+    notes = result.scalars().all()
     return notes
 
 
@@ -38,10 +38,10 @@ async def delete(req: DeleteRequest, session: AsyncSession = Depends(get_session
             Note.id == req.id
         )
     )
-    note = result.fetchone()
+    note = result.scalars().first()
     if not note:
-        raise HTTPException(status_code=204, detail='To-do-item не найден')
-    await session.delete(note[0])
+        raise HTTPException(status_code=404, detail='To-do-item не найден')
+    await session.delete(note)
     await session.commit()
     return {"message": "Успешное удаление"}
 
@@ -51,7 +51,7 @@ async def create(req: AddRequest, session: AsyncSession = Depends(get_session)):
     note = Note(title=req.title, checked=False)
     session.add(note)
     await session.commit()
-    return {'message': 'Успешное добавление'}
+    return {"note": note, 'message': 'Успешное добавление'}
 
 
 @router.post("/items/update")
@@ -61,10 +61,10 @@ async def update(req: EditRequest, session: AsyncSession = Depends(get_session))
             Note.id == req.id
         )
     )
-    note = result.fetchone()
+    note = result.scalars().first()
     if not note:
         raise HTTPException(status_code=404, detail='To-do-item не найден')
-    setattr(note[0], 'title', req.title)
-    setattr(note[0], 'checked', req.checked)
+    note.title = req.title
+    note.checked = req.checked
     await session.commit()
-    return {'message': 'Успешное изменение'}
+    return {"note": note, 'message': 'Успешное изменение'}
